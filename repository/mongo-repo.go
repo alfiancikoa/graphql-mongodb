@@ -76,6 +76,7 @@ func (db *database) Get(id int) (*model.Movie, error) {
 	return data, nil
 }
 
+// Query database untuk mendapatkan seluruh data pada database
 func (db *database) GetAll() ([]*model.Movie, error) {
 	collection := db.client.Database(DATABASE).Collection(COLLECTION)
 	cursor, err := collection.Find(context.TODO(), bson.D{})
