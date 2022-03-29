@@ -37,8 +37,12 @@ func (r *mutationResolver) UpdateMovie(ctx context.Context, id int, input model.
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteMovie(ctx context.Context, id int) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *mutationResolver) DeleteMovie(ctx context.Context, id int) (string, error) {
+	numberOfDel, err := movieRepo.Delete(id)
+	if err != nil {
+		return "false", fmt.Errorf("internal server error")
+	}
+	return fmt.Sprintf("Number of documents deleted: %d", numberOfDel), nil
 }
 
 func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {

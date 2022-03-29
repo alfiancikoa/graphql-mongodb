@@ -32,5 +32,5 @@ input InputStar {
 type Mutation {
   addMovie(input: InputMovie!): Movie!
   updateMovie(id: Int!, input: InputMovie!): Movie!
-  deleteMovie(id:Int!): Boolean!
+  deleteMovie(id:Int!): String!
 }

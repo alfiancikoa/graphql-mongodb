@@ -69,7 +69,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	AddMovie(ctx context.Context, input model.InputMovie) (*model.Movie, error)
 	UpdateMovie(ctx context.Context, id int, input model.InputMovie) (*model.Movie, error)
-	DeleteMovie(ctx context.Context, id int) (bool, error)
+	DeleteMovie(ctx context.Context, id int) (string, error)
 }
 type QueryResolver interface {
 	Movies(ctx context.Context) ([]*model.Movie, error)
@@ -279,7 +279,7 @@ input InputStar {
 type Mutation {
   addMovie(input: InputMovie!): Movie!
   updateMovie(id: Int!, input: InputMovie!): Movie!
-  deleteMovie(id:Int!): Boolean!
+  deleteMovie(id:Int!): String!
 }
 `, BuiltIn: false},
 }
@@ -672,9 +672,9 @@ func (ec *executionContext) _Mutation_deleteMovie(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_movies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {

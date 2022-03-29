@@ -16,6 +16,7 @@ type MovieRepository interface {
 	Save(video *model.Movie) error
 	GetAll() ([]*model.Movie, error)
 	Get(id int) (*model.Movie, error)
+	Delete(id int) (int64, error)
 }
 
 type database struct {
@@ -86,7 +87,6 @@ func (db *database) GetAll() ([]*model.Movie, error) {
 	}
 	defer cursor.Close(ctx)
 	var data []*model.Movie
-
 	for cursor.Next(ctx) {
 		var v *model.Movie
 		err := cursor.Decode(&v)
@@ -98,4 +98,15 @@ func (db *database) GetAll() ([]*model.Movie, error) {
 	}
 
 	return data, nil
+}
+
+func (db *database) Delete(id int) (int64, error) {
+	collection := db.client.Database(DATABASE).Collection(COLLECTION)
+	deleted, err := collection.DeleteOne(ctx, bson.M{"id": id})
+	if err != nil {
+		fmt.Println(err)
+		return -1, err
+	}
+
+	return deleted.DeletedCount, nil
 }
