@@ -46,7 +46,7 @@ const (
 	COLLECTION = "movies"
 )
 
-// Database untuk menyimpan data ke dalam database Mongodb
+// Query database untuk menyimpan data ke dalam database Mongodb
 func (db *database) Save(video *model.Movie) error {
 	collection := db.client.Database(DATABASE).Collection(COLLECTION)
 	_, err := collection.InsertOne(context.TODO(), video)
@@ -57,6 +57,7 @@ func (db *database) Save(video *model.Movie) error {
 	return nil
 }
 
+// Query database untuk mendapatkan data berdasarkan input id
 func (db *database) Get(id int) (*model.Movie, error) {
 	collection := db.client.Database(DATABASE).Collection(COLLECTION)
 	cursor, err := collection.Find(ctx, bson.M{"id": id})
