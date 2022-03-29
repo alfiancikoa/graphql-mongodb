@@ -13,10 +13,11 @@ import (
 )
 
 type MovieRepository interface {
-	Save(video *model.Movie) error
+	Save(movie *model.Movie) error
 	GetAll() ([]*model.Movie, error)
 	Get(id int) (*model.Movie, error)
 	Delete(id int) (int64, error)
+	Edit(id int, movie *model.Movie) (*model.Movie, error)
 }
 
 type database struct {
@@ -48,9 +49,9 @@ const (
 )
 
 // Query database untuk menyimpan data ke dalam database Mongodb
-func (db *database) Save(video *model.Movie) error {
+func (db *database) Save(movie *model.Movie) error {
 	collection := db.client.Database(DATABASE).Collection(COLLECTION)
-	_, err := collection.InsertOne(context.TODO(), video)
+	_, err := collection.InsertOne(context.TODO(), movie)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -109,4 +110,14 @@ func (db *database) Delete(id int) (int64, error) {
 	}
 
 	return deleted.DeletedCount, nil
+}
+
+func (db *database) Edit(id int, movie *model.Movie) (*model.Movie, error) {
+	collection := db.client.Database(DATABASE).Collection(COLLECTION)
+	_, err := collection.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": movie})
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return movie, nil
 }

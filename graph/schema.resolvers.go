@@ -34,7 +34,26 @@ func (r *mutationResolver) AddMovie(ctx context.Context, input model.InputMovie)
 }
 
 func (r *mutationResolver) UpdateMovie(ctx context.Context, id int, input model.InputMovie) (*model.Movie, error) {
-	panic(fmt.Errorf("not implemented"))
+	var stars []*model.Star
+	for _, star := range input.Stars {
+		stars = append(stars, &model.Star{
+			Name: star.Name,
+		})
+	}
+
+	newMovie := &model.Movie{
+		ID:    input.ID,
+		Title: input.Title,
+		Year:  input.Year,
+		Stars: stars,
+	}
+
+	data, err := movieRepo.Edit(id, newMovie)
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("internal server error")
+	}
+	return data, nil
 }
 
 func (r *mutationResolver) DeleteMovie(ctx context.Context, id int) (string, error) {
