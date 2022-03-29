@@ -2,17 +2,21 @@
 
 package model
 
+type InputMovie struct {
+	Title string       `json:"title"`
+	Year  string       `json:"year"`
+	Stars []*InputStar `json:"stars"`
+}
+
+type InputStar struct {
+	Name string `json:"name"`
+}
+
 type Movie struct {
 	ID    int     `json:"id"`
 	Title string  `json:"title"`
 	Year  string  `json:"year"`
 	Stars []*Star `json:"stars"`
-}
-
-type NewMovie struct {
-	Title string   `json:"title"`
-	Year  string   `json:"year"`
-	Stars []string `json:"stars"`
 }
 
 type Star struct {

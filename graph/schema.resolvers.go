@@ -9,13 +9,30 @@ import (
 
 	"github.com/alfiancikoa/graphql-mongodb/graph/generated"
 	"github.com/alfiancikoa/graphql-mongodb/graph/model"
+	"github.com/alfiancikoa/graphql-mongodb/repository"
 )
 
-func (r *mutationResolver) AddMovie(ctx context.Context, input model.NewMovie) (*model.Movie, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *mutationResolver) AddMovie(ctx context.Context, input model.InputMovie) (*model.Movie, error) {
+	var stars []*model.Star
+	for _, star := range input.Stars {
+		stars = append(stars, &model.Star{
+			Name: star.Name,
+		})
+	}
+
+	movie := &model.Movie{
+		Title: input.Title,
+		Year:  input.Year,
+		Stars: stars,
+	}
+	if err := movieRepo.Save(movie); err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("internal server error")
+	}
+	return movie, nil
 }
 
-func (r *mutationResolver) UpdateMovie(ctx context.Context, id int, input model.NewMovie) (*model.Movie, error) {
+func (r *mutationResolver) UpdateMovie(ctx context.Context, id int, input model.InputMovie) (*model.Movie, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -24,7 +41,12 @@ func (r *mutationResolver) DeleteMovie(ctx context.Context, id int) (bool, error
 }
 
 func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
-	panic(fmt.Errorf("not implemented"))
+	data, err := movieRepo.GetAll()
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("internal server error")
+	}
+	return data, nil
 }
 
 func (r *queryResolver) Movie(ctx context.Context, id int) (*model.Movie, error) {
@@ -46,3 +68,4 @@ type queryResolver struct{ *Resolver }
 //  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
+var movieRepo repository.MovieRepository = repository.New()

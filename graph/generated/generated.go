@@ -51,9 +51,9 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AddMovie    func(childComplexity int, input model.NewMovie) int
+		AddMovie    func(childComplexity int, input model.InputMovie) int
 		DeleteMovie func(childComplexity int, id int) int
-		UpdateMovie func(childComplexity int, id int, input model.NewMovie) int
+		UpdateMovie func(childComplexity int, id int, input model.InputMovie) int
 	}
 
 	Query struct {
@@ -67,8 +67,8 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	AddMovie(ctx context.Context, input model.NewMovie) (*model.Movie, error)
-	UpdateMovie(ctx context.Context, id int, input model.NewMovie) (*model.Movie, error)
+	AddMovie(ctx context.Context, input model.InputMovie) (*model.Movie, error)
+	UpdateMovie(ctx context.Context, id int, input model.InputMovie) (*model.Movie, error)
 	DeleteMovie(ctx context.Context, id int) (bool, error)
 }
 type QueryResolver interface {
@@ -129,7 +129,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddMovie(childComplexity, args["input"].(model.NewMovie)), true
+		return e.complexity.Mutation.AddMovie(childComplexity, args["input"].(model.InputMovie)), true
 
 	case "Mutation.deleteMovie":
 		if e.complexity.Mutation.DeleteMovie == nil {
@@ -153,7 +153,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateMovie(childComplexity, args["id"].(int), args["input"].(model.NewMovie)), true
+		return e.complexity.Mutation.UpdateMovie(childComplexity, args["id"].(int), args["input"].(model.InputMovie)), true
 
 	case "Query.movie":
 		if e.complexity.Query.Movie == nil {
@@ -265,15 +265,19 @@ type Query {
   movie(id:Int!): Movie!
 }
 
-input NewMovie {
+input InputMovie {
   title: String!
   year: String!
-  stars: [String!]!
+  stars: [InputStar!]!
+}
+
+input InputStar {
+  name: String!
 }
 
 type Mutation {
-  addMovie(input: NewMovie!): Movie!
-  updateMovie(id: Int!, input: NewMovie!): Movie!
+  addMovie(input: InputMovie!): Movie!
+  updateMovie(id: Int!, input: InputMovie!): Movie!
   deleteMovie(id:Int!): Boolean!
 }
 `, BuiltIn: false},
@@ -287,10 +291,10 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_addMovie_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewMovie
+	var arg0 model.InputMovie
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewMovie2githubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐNewMovie(ctx, tmp)
+		arg0, err = ec.unmarshalNInputMovie2githubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐInputMovie(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -326,10 +330,10 @@ func (ec *executionContext) field_Mutation_updateMovie_args(ctx context.Context,
 		}
 	}
 	args["id"] = arg0
-	var arg1 model.NewMovie
+	var arg1 model.InputMovie
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNNewMovie2githubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐNewMovie(ctx, tmp)
+		arg1, err = ec.unmarshalNInputMovie2githubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐInputMovie(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -571,7 +575,7 @@ func (ec *executionContext) _Mutation_addMovie(ctx context.Context, field graphq
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddMovie(rctx, args["input"].(model.NewMovie))
+		return ec.resolvers.Mutation().AddMovie(rctx, args["input"].(model.InputMovie))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -613,7 +617,7 @@ func (ec *executionContext) _Mutation_updateMovie(ctx context.Context, field gra
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateMovie(rctx, args["id"].(int), args["input"].(model.NewMovie))
+		return ec.resolvers.Mutation().UpdateMovie(rctx, args["id"].(int), args["input"].(model.InputMovie))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2041,8 +2045,8 @@ func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field gr
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputNewMovie(ctx context.Context, obj interface{}) (model.NewMovie, error) {
-	var it model.NewMovie
+func (ec *executionContext) unmarshalInputInputMovie(ctx context.Context, obj interface{}) (model.InputMovie, error) {
+	var it model.InputMovie
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -2070,7 +2074,30 @@ func (ec *executionContext) unmarshalInputNewMovie(ctx context.Context, obj inte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stars"))
-			it.Stars, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
+			it.Stars, err = ec.unmarshalNInputStar2ᚕᚖgithubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐInputStarᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputInputStar(ctx context.Context, obj interface{}) (model.InputStar, error) {
+	var it model.InputStar
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2768,6 +2795,33 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) unmarshalNInputMovie2githubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐInputMovie(ctx context.Context, v interface{}) (model.InputMovie, error) {
+	res, err := ec.unmarshalInputInputMovie(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNInputStar2ᚕᚖgithubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐInputStarᚄ(ctx context.Context, v interface{}) ([]*model.InputStar, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*model.InputStar, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNInputStar2ᚖgithubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐInputStar(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalNInputStar2ᚖgithubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐInputStar(ctx context.Context, v interface{}) (*model.InputStar, error) {
+	res, err := ec.unmarshalInputInputStar(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2841,11 +2895,6 @@ func (ec *executionContext) marshalNMovie2ᚖgithubᚗcomᚋalfiancikoaᚋgraphq
 	return ec._Movie(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNNewMovie2githubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐNewMovie(ctx context.Context, v interface{}) (model.NewMovie, error) {
-	res, err := ec.unmarshalInputNewMovie(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalNStar2ᚕᚖgithubᚗcomᚋalfiancikoaᚋgraphqlᚑmongodbᚋgraphᚋmodelᚐStarᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Star) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -2913,38 +2962,6 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {

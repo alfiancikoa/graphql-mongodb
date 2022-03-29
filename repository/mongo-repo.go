@@ -13,8 +13,8 @@ import (
 )
 
 type MovieRepository interface {
-	Save(video *model.Movie)
-	GetAll() []*model.Movie
+	Save(video *model.Movie) error
+	GetAll() ([]*model.Movie, error)
 }
 
 type database struct {
@@ -45,19 +45,22 @@ const (
 	COLLECTION = "movies"
 )
 
-func (db *database) Save(video *model.Movie) {
+func (db *database) Save(video *model.Movie) error {
 	collection := db.client.Database(DATABASE).Collection(COLLECTION)
 	_, err := collection.InsertOne(context.TODO(), video)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		return err
 	}
+	return nil
 }
 
-func (db *database) GetAll() []*model.Movie {
+func (db *database) GetAll() ([]*model.Movie, error) {
 	collection := db.client.Database(DATABASE).Collection(COLLECTION)
 	cursor, err := collection.Find(context.TODO(), bson.D{})
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		return nil, err
 	}
 	defer cursor.Close(ctx)
 	var data []*model.Movie
@@ -66,10 +69,11 @@ func (db *database) GetAll() []*model.Movie {
 		var v *model.Movie
 		err := cursor.Decode(&v)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
+			return nil, err
 		}
 		data = append(data, v)
 	}
 
-	return data
+	return data, nil
 }

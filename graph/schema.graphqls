@@ -18,14 +18,18 @@ type Query {
   movie(id:Int!): Movie!
 }
 
-input NewMovie {
+input InputMovie {
   title: String!
   year: String!
-  stars: [String!]!
+  stars: [InputStar!]!
+}
+
+input InputStar {
+  name: String!
 }
 
 type Mutation {
-  addMovie(input: NewMovie!): Movie!
-  updateMovie(id: Int!, input: NewMovie!): Movie!
+  addMovie(input: InputMovie!): Movie!
+  updateMovie(id: Int!, input: InputMovie!): Movie!
   deleteMovie(id:Int!): Boolean!
 }
