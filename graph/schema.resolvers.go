@@ -21,6 +21,7 @@ func (r *mutationResolver) AddMovie(ctx context.Context, input model.InputMovie)
 	}
 
 	movie := &model.Movie{
+		ID:    input.ID,
 		Title: input.Title,
 		Year:  input.Year,
 		Stars: stars,
@@ -50,7 +51,12 @@ func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
 }
 
 func (r *queryResolver) Movie(ctx context.Context, id int) (*model.Movie, error) {
-	panic(fmt.Errorf("not implemented"))
+	movie, err := movieRepo.Get(id)
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("internal server error")
+	}
+	return movie, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

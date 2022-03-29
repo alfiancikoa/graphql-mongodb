@@ -266,6 +266,7 @@ type Query {
 }
 
 input InputMovie {
+  id: Int!
   title: String!
   year: String!
   stars: [InputStar!]!
@@ -2054,6 +2055,14 @@ func (ec *executionContext) unmarshalInputInputMovie(ctx context.Context, obj in
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "title":
 			var err error
 

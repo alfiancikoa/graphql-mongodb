@@ -3,6 +3,7 @@
 package model
 
 type InputMovie struct {
+	ID    int          `json:"id"`
 	Title string       `json:"title"`
 	Year  string       `json:"year"`
 	Stars []*InputStar `json:"stars"`

@@ -19,6 +19,7 @@ type Query {
 }
 
 input InputMovie {
+  id: Int!
   title: String!
   year: String!
   stars: [InputStar!]!

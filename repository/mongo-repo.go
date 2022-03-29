@@ -15,6 +15,7 @@ import (
 type MovieRepository interface {
 	Save(video *model.Movie) error
 	GetAll() ([]*model.Movie, error)
+	Get(id int) (*model.Movie, error)
 }
 
 type database struct {
@@ -53,6 +54,24 @@ func (db *database) Save(video *model.Movie) error {
 		return err
 	}
 	return nil
+}
+
+func (db *database) Get(id int) (*model.Movie, error) {
+	collection := db.client.Database(DATABASE).Collection(COLLECTION)
+	cursor, err := collection.Find(ctx, bson.M{"id": id})
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	var data *model.Movie
+	for cursor.Next(ctx) {
+		err := cursor.Decode(&data)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+	}
+	return data, nil
 }
 
 func (db *database) GetAll() ([]*model.Movie, error) {
