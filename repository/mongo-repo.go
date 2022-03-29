@@ -46,6 +46,7 @@ const (
 	COLLECTION = "movies"
 )
 
+// Database untuk menyimpan data ke dalam database Mongodb
 func (db *database) Save(video *model.Movie) error {
 	collection := db.client.Database(DATABASE).Collection(COLLECTION)
 	_, err := collection.InsertOne(context.TODO(), video)
