@@ -12,24 +12,29 @@ import (
 	"github.com/alfiancikoa/graphql-mongodb/repository"
 )
 
+// Fungsi untuk menambahkan new Movie
 func (r *mutationResolver) AddMovie(ctx context.Context, input model.InputMovie) (*model.Movie, error) {
+	// variable stars digunakan untuk menampung data stars dari input-an
 	var stars []*model.Star
+	// simpan seluruh data star ke dalam variable stars
 	for _, star := range input.Stars {
 		stars = append(stars, &model.Star{
 			Name: star.Name,
 		})
 	}
-
+	// variable movie digunakan untuk menampung data movie dari input-an
 	movie := &model.Movie{
 		ID:    input.ID,
 		Title: input.Title,
 		Year:  input.Year,
 		Stars: stars,
 	}
+	// data disimpan ke dalam database, jika error maka tampilkan pesan error
 	if err := movieRepo.Save(movie); err != nil {
 		fmt.Println(err)
 		return nil, fmt.Errorf("internal server error")
 	}
+	// kembalikan data movie
 	return movie, nil
 }
 
