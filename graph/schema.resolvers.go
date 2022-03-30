@@ -91,12 +91,16 @@ func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
 	return data, nil
 }
 
+// Fungsi untuk melihat atau mengambil data movie berdasarkan idnya
 func (r *queryResolver) Movie(ctx context.Context, id int) (*model.Movie, error) {
+	// cari data movie pada database dengan id tertentu
 	movie, err := movieRepo.Get(id)
+	// jika terjadi error maka kembalikan pesan error
 	if err != nil {
 		fmt.Println(err)
 		return nil, fmt.Errorf("internal server error")
 	}
+	// kembalikan data movie
 	return movie, nil
 }
 
