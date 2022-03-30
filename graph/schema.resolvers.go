@@ -78,12 +78,16 @@ func (r *mutationResolver) DeleteMovie(ctx context.Context, id int) (string, err
 	return fmt.Sprintf("Number of documents deleted: %d", numberOfDel), nil
 }
 
+// Fungsi untuk melihat atau menampilkan seluruh data movie
 func (r *queryResolver) Movies(ctx context.Context) ([]*model.Movie, error) {
+	// cari seluruh data movie yang ada pada database
 	data, err := movieRepo.GetAll()
+	// jika terjadi error maka kembalikan pesan error
 	if err != nil {
 		fmt.Println(err)
 		return nil, fmt.Errorf("internal server error")
 	}
+	// kembalikan seluruh data movie
 	return data, nil
 }
 
