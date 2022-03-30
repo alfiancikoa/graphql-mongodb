@@ -66,11 +66,15 @@ func (r *mutationResolver) UpdateMovie(ctx context.Context, id int, input model.
 	return data, nil
 }
 
+// Fungsi untuk menghapus data movie
 func (r *mutationResolver) DeleteMovie(ctx context.Context, id int) (string, error) {
+	// hapus data pada database dengan id tertentu
 	numberOfDel, err := movieRepo.Delete(id)
+	// jika terjadi error maka kembalikan pesan error
 	if err != nil {
 		return "false", fmt.Errorf("internal server error")
 	}
+	// kembalikan respon jumlah data yang telah terhapus
 	return fmt.Sprintf("Number of documents deleted: %d", numberOfDel), nil
 }
 
