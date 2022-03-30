@@ -38,26 +38,31 @@ func (r *mutationResolver) AddMovie(ctx context.Context, input model.InputMovie)
 	return movie, nil
 }
 
+// Fungsi untuk edit data movie
 func (r *mutationResolver) UpdateMovie(ctx context.Context, id int, input model.InputMovie) (*model.Movie, error) {
+	// variable stars digunakan untuk menampung data stars dari input-an
 	var stars []*model.Star
+	// simpan seluruh data star yang baru ke dalam variable stars
 	for _, star := range input.Stars {
 		stars = append(stars, &model.Star{
 			Name: star.Name,
 		})
 	}
-
+	// variable newMovie digunakan untuk menampung data movie dari input-an
 	newMovie := &model.Movie{
 		ID:    input.ID,
 		Title: input.Title,
 		Year:  input.Year,
 		Stars: stars,
 	}
-
+	// edit data yang ada pada database dengan data yang baru
 	data, err := movieRepo.Edit(id, newMovie)
+	// jika terjadi error maka kembalikan pesan error
 	if err != nil {
 		fmt.Println(err)
 		return nil, fmt.Errorf("internal server error")
 	}
+	// kembbalikan data new movie
 	return data, nil
 }
 
