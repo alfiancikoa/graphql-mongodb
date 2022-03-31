@@ -5,14 +5,14 @@ Pertama kali dikembangkan oleh perusahaan asal New York City, 10gen (sekarang Mo
 (Sumber: https://id.wikipedia.org/wiki/MongoDB)
 </p>
 
-# Command To Use
+### Command To Use
 
 - Buat direktori workspace
 
 ```
-$ mkdir graphql-mongo
-$ cd graphql-mongo
-$ go mod init github.com/[username]/graphql-mongo
+$ mkdir graphql-mongodb
+$ cd graphql-mongodb
+$ go mod init github.com/[username]/graphql-mongodb
 ```
 
 - Download library
@@ -23,4 +23,10 @@ $ go get github.com/99designs/gqlgen
 
 # library mongo driver
 $ go get go.mongodb.org/mongo-driver/mongo
+```
+
+- Terapkan skeleton/struktur folder dari 99designs
+
+```
+$ go run github.com/99designs/gqlgen init
 ```
