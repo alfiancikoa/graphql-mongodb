@@ -4,3 +4,22 @@
 Pertama kali dikembangkan oleh perusahaan asal New York City, 10gen (sekarang MongoDB Inc.) pada bulan Oktober 2007 sebagai bagian dari platform yang direncanakan sebagai produk jasa, perusahaan bergeser ke model pembangunan sumber terbuka pada tahun 2009, dengan 10gen menawarkan dukungan komersial dan layanan lainnya.[4] Sejak itu, MongoDB telah diadopsi sebagai perangkat lunak backend oleh sejumlah situs dan layanan, termasuk Craigslist, eBay, Foursquare, SourceForge, dan The New York Times. MongoDB adalah sistem basis data NoSQL yang paling populer.
 </p>
 
+# Command To Use
+
+- Buat direktori workspace
+
+```
+$ mkdir graphql-mongo
+$ cd graphql-mongo
+$ go mod init github.com/[username]/graphql-mongo
+```
+
+- Download library
+
+```
+# library gqlgen dari 99designs
+$ go get github.com/99designs/gqlgen
+
+# library mongo driver
+$ go get go.mongodb.org/mongo-driver/mongo
+```
