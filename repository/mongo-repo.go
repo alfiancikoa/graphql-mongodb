@@ -101,6 +101,7 @@ func (db *database) GetAll() ([]*model.Movie, error) {
 	return data, nil
 }
 
+// Query database untuk menghapus data
 func (db *database) Delete(id int) (int64, error) {
 	collection := db.client.Database(DATABASE).Collection(COLLECTION)
 	deleted, err := collection.DeleteOne(ctx, bson.M{"id": id})
@@ -112,6 +113,7 @@ func (db *database) Delete(id int) (int64, error) {
 	return deleted.DeletedCount, nil
 }
 
+// Query database untuk mengedit data
 func (db *database) Edit(id int, movie *model.Movie) (*model.Movie, error) {
 	collection := db.client.Database(DATABASE).Collection(COLLECTION)
 	_, err := collection.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": movie})
